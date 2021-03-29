@@ -2,50 +2,51 @@
 #include "uLCD_4DGL.h"
 
 uLCD_4DGL uLCD(D1, D0, D2); // serial tx, serial rx, reset pin;
-DigitalIn but1(A1);
-DigitalIn but2(A2);
-DigitalIn but3(A3);
-AnalogOut Aout(PA_4);
-AnalogIn Ain(A0);
+DigitalIn but1(A1);         // decrease the pre_freq
+DigitalIn but2(A2);         // let freq = pre_freq (confirm the freq)
+DigitalIn but3(A3);         // increase the pre_freq
+AnalogOut Aout(PA_4);       // set the analog output
+AnalogIn Ain(A0);           // set the analog input
 
 
-
-// Thread t;
-// EventQueue queue(32 * EVENTS_EVENT_SIZE);
-
-int pre_freq = 400;
-int freq = 400;
-float ratio_Aout = 0;
+int pre_freq = 400; // the frequency shown on the uLCD
+int freq = 400;     // the confirm frequency (the frequency of the output wave)
+float ratio_Aout = 0; // to indicate the voltage I will output
 float w_t = (1.0 / 700.0) / 50.0; // the time we need to wait
 char step = 0; // see where I am in the period
-float ADCdata[100];
-char idx = -30;
-char conf = 0;
+float ADCdata[100]; // sampled data
 
-void print_on_uLCD(void) {
+char idx = -30;     // the index of the ADCdata array
+                    // the reason why I use -30 is that I don't want to
+					// sample the wave immediately.
+char conf = 0;      // used to determine whether I confirmed already or not
+
+void print_on_uLCD(void) { // print the pre_freq on the uLCD
 	uLCD.locate(0, 0);
 	uLCD.printf("pre_freq = %4D\n", pre_freq);
 	return;
 }
 
-void print_on_uLCD_v2(void) {
+void print_on_uLCD_v2(void) { // print the freq on the uLCD
 	uLCD.locate(0, 3);
 	uLCD.printf("freq = %4D\n", freq);
 	return;
 }
 
 int main(){
-	int i;
-	/*uLCD.background_color(DGREY);
-    uLCD.cls();
-	uLCD.text_inverse(ON);
-    uLCD.text_underline(ON);*/
+	int i; // loop index
+
+	// set the mode of the button
 	but1.mode(PullNone);
 	but2.mode(PullNone);
 	but3.mode(PullNone);
+
+	// show the pre_freq on the uLCD
 	print_on_uLCD();
 
     while (1) {
+
+		// scan the button
 		if (but1 == 1) {
 			pre_freq -= 10;
 			print_on_uLCD();
@@ -62,7 +63,8 @@ int main(){
 			print_on_uLCD();
 		}
 
-
+		// Determine whether the magnitude of my triangle wave 
+		// should become larger or smaller.
 		if (step == 50) {
 			ratio_Aout = 0;
 			step = 0;
@@ -75,24 +77,26 @@ int main(){
 			ratio_Aout -= 0.060606;
 			step++;
 		}
-		
 		Aout = ratio_Aout;
+
+		// count how many time should I wait
 		w_t = 1000000.0/freq/50 - 15;
 		wait_us(w_t);
 
+		// check if I need to sample the wave
 		if (conf == 1) {
 			if (idx >= 0) ADCdata[idx] = Ain;
-			if (idx == 99) {
-				printf("%d\r\n", freq);
-
+			if (idx == 99) { // check if the sampling process is done
+				printf("%d\r\n", freq); // output the freq to python
+				// output the sampled data
 				for (i = 0; i < 100; ++i){
 					printf("%f\r\n", ADCdata[i]);
 					ThisThread::sleep_for(10ms);
 				}
-				idx = -30;
-				conf = 0;
+				idx = -30; // reset the flag for the next sampling
+				conf = 0;  // reset the flag for the next confirm
 			}
-			else ++idx;
+			else ++idx; // move to sample next data
 		}
     }
 }
