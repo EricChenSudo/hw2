@@ -9,10 +9,10 @@ AnalogOut Aout(PA_4);       // set the analog output
 AnalogIn Ain(A0);           // set the analog input
 
 
-int pre_freq = 400; // the frequency shown on the uLCD
-int freq = 400;     // the confirm frequency (the frequency of the output wave)
+int pre_freq = 200; // the frequency shown on the uLCD
+int freq = 200;     // the confirm frequency (the frequency of the output wave)
 float ratio_Aout = 0; // to indicate the voltage I will output
-float w_t = (1.0 / 700.0) / 50.0; // the time we need to wait
+float w_t = (1.0 / 200.0) / 50.0; // the time we need to wait
 char step = 0; // see where I am in the period
 float ADCdata[100]; // sampled data
 
@@ -24,11 +24,16 @@ char conf = 0;      // used to determine whether I confirmed already or not
 void print_on_uLCD(void) { // print the pre_freq on the uLCD
 	uLCD.locate(0, 0);
 	uLCD.printf("pre_freq = %4D\n", pre_freq);
+	uLCD.locate(0, 2);
+	uLCD.printf("choose the freq\n");
+	uLCD.locate(0, 3);
+	uLCD.printf("from 10 to 400Hz\n");
+	
 	return;
 }
 
 void print_on_uLCD_v2(void) { // print the freq on the uLCD
-	uLCD.locate(0, 3);
+	uLCD.locate(0, 6);
 	uLCD.printf("freq = %4D\n", freq);
 	return;
 }
@@ -86,6 +91,7 @@ int main(){
 		// check if I need to sample the wave
 		if (conf == 1) {
 			if (idx >= 0) ADCdata[idx] = Ain;
+
 			if (idx == 99) { // check if the sampling process is done
 				printf("%d\r\n", freq); // output the freq to python
 				// output the sampled data

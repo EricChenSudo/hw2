@@ -3,7 +3,7 @@ import numpy as np
 import serial
 import time
 
-serdev = '/dev/ttyACM0'
+serdev = '/dev/ttyACM1'
 
 s = serial.Serial(serdev)
 
@@ -17,7 +17,6 @@ t = np.arange(0, 1.0 / freq * 2, Ts) # time vector; create Fs samples between 0 
 
 y = np.arange(0, 1.0 / freq * 2, Ts) # signal vector; create Fs samples
 
-
 n = len(y) # length of the signal
 
 k = np.arange(n)
@@ -30,13 +29,12 @@ frq = frq[range(int(n/2))] # one side frequency range
 
 
 
-for x in range(0, int(100)):
+for x in range(len(y)):
+		line=s.readline() # Read an echo string from B_L4S5I_IOT01A terminated with '\n'
 
-    line=s.readline() # Read an echo string from B_L4S5I_IOT01A terminated with '\n'
-
-    # print line
-
-    y[x] = float(line)
+		# print line
+		y[x] = float(line)
+	
 
 
 Y = np.fft.fft(y)/n*2 # fft computing and normalization
