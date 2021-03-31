@@ -89,7 +89,7 @@ int main(){
 		Aout = ratio_Aout;
 
 		// count how many time should I wait
-		w_t = 1000000.0/freq/50 - 15;
+		w_t = 1000000.0/freq/50 - 30;
 		wait_us(w_t);
 
 		// check if I need to sample the wave
