@@ -13,6 +13,6 @@
 	The figure which we obtained after executing the FFT.py has two subplots.
 	(note)The image at the top is the sampled data we get from the filtered wave
 	(note)The figure below is the frequency spectrum of the wave we filtered
-	![image]('Screenshot from 2021-03-31 03-12-51.png')
-	![image]('Screenshot from 2021-03-31 03-11-37.png')
+	![image]('https://github.com/EricChenSudo/hw2/blob/master/hw2_demo/Screenshot%20from%202021-03-31%2003-11-37.png')
+	![image]('https://github.com/EricChenSudo/hw2/blob/master/hw2_demo/Screenshot%20from%202021-03-31%2003-12-51.png')
 	
