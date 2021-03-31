@@ -22,12 +22,16 @@ char idx = -30;     // the index of the ADCdata array
 char conf = 0;      // used to determine whether I confirmed already or not
 
 void print_on_uLCD(void) { // print the pre_freq on the uLCD
+	uLCD.color(WHITE);
 	uLCD.locate(0, 0);
 	uLCD.printf("pre_freq = %4D\n", pre_freq);
-	uLCD.locate(0, 2);
-	uLCD.printf("choose the freq\n");
 	uLCD.locate(0, 3);
+	uLCD.printf("choose the freq\n");
+	uLCD.locate(0, 4);
 	uLCD.printf("from 10 to 400Hz\n");
+	uLCD.filled_rectangle(100, 10, 0, 20, 0x000000);
+	uLCD.filled_rectangle(pre_freq / 4, 10, 0, 20, 0x0000FF);
+
 	
 	return;
 }
